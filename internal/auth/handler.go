@@ -2,12 +2,11 @@ package auth
 
 import (
 	"fin_manager_API/m/configs"
+	"fin_manager_API/m/pkg/jwt"
 	"fin_manager_API/m/pkg/req"
 	"fin_manager_API/m/pkg/res"
 	"fmt"
 	"net/http"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthHandler struct {
@@ -41,6 +40,7 @@ func (handler AuthHandler) Login() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
+
 		j := jwt.NewJWT(handler.Config.Auth.Secret)
 		token, err := j.Create(jwt.JWTData{
 			Email: email,

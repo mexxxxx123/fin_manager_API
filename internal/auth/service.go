@@ -12,6 +12,10 @@ type AuthService struct {
 	UserRepository di.IUserRepository
 }
 
+func NewAuthService(userRepo di.IUserRepository) *AuthService {
+	return &AuthService{UserRepository: userRepo}
+}
+
 func (service *AuthService) Login(email string, password string) (string, error) {
 	user, _ := service.UserRepository.FindByEmail(email)
 	if user == nil {
