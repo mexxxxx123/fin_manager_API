@@ -3,6 +3,7 @@ package main
 import (
 	"fin_manager_API/m/configs"
 	"fin_manager_API/m/internal/auth"
+	"fin_manager_API/m/internal/transactions"
 	"fin_manager_API/m/internal/user"
 	"fin_manager_API/m/pkg/db"
 	"fmt"
@@ -16,22 +17,30 @@ func main() {
 
 	//REPOSITORIES
 	userRepo := user.NewUserRepository(db)
+	transRepo := transactions.NewTransactionRepository(db)
 
 	//SERVICES
 	authService := auth.NewAuthService(userRepo)
+	transService := transactions.NewTrasactionService(transRepo)
 
 	//HANDLERS
+	transactions.NewTransactionHandler(mux, transactions.TransactionHandlerDeps{
+		Config:                conf,
+		TransactionRepository: transRepo,
+		TransactionService:    transService,
+	})
+
 	auth.NewAuthHandler(mux, auth.AuthHandlerDeps{
 		Config:      conf,
 		AuthService: authService,
 	})
 
 	server := http.Server{
-		Addr:    ":8083",
+		Addr:    ":8084",
 		Handler: mux,
 	}
 
-	fmt.Println("леригоу ищу по порту 8083")
+	fmt.Println("леригоу ищу по порту 8084")
 
 	err := server.ListenAndServe()
 

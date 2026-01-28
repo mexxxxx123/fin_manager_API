@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fin_manager_API/m/internal/transactions"
 	"fin_manager_API/m/internal/user"
 	"os"
 
@@ -16,5 +17,5 @@ func main() {
 		panic(err)
 	}
 	db, err := gorm.Open(postgres.Open(os.Getenv("DSN")), &gorm.Config{})
-	db.AutoMigrate(&user.User{})
+	db.AutoMigrate(&user.User{}, &transactions.Transaction{})
 }

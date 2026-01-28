@@ -34,7 +34,7 @@ func (handler AuthHandler) Login() http.HandlerFunc {
 		if err != nil {
 			fmt.Println(err)
 		}
-		email, err := handler.AuthService.Login(body.Email, body.Password)
+		userId, email, err := handler.AuthService.Login(body.Email, body.Password)
 		if err != nil {
 			fmt.Println(err)
 			http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -43,7 +43,8 @@ func (handler AuthHandler) Login() http.HandlerFunc {
 
 		j := jwt.NewJWT(handler.Config.Auth.Secret)
 		token, err := j.Create(jwt.JWTData{
-			Email: email,
+			Email:  email,
+			UserId: userId,
 		})
 		if err != nil {
 			fmt.Println(err)
@@ -65,7 +66,7 @@ func (handler AuthHandler) Register() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		email, err := handler.AuthService.Register(body.Email, body.Password, body.Name)
+		userId, email, err := handler.AuthService.Register(body.Email, body.Password, body.Name)
 		if err != nil {
 			fmt.Println(err)
 			http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -73,7 +74,8 @@ func (handler AuthHandler) Register() http.HandlerFunc {
 		}
 		j := jwt.NewJWT(handler.Config.Auth.Secret)
 		token, err := j.Create(jwt.JWTData{
-			Email: email,
+			Email:  email,
+			UserId: userId,
 		})
 		if err != nil {
 			fmt.Println(err)
