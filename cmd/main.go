@@ -3,6 +3,7 @@ package main
 import (
 	"fin_manager_API/m/configs"
 	"fin_manager_API/m/internal/auth"
+	"fin_manager_API/m/internal/stat"
 	"fin_manager_API/m/internal/transactions"
 	"fin_manager_API/m/internal/user"
 	"fin_manager_API/m/pkg/db"
@@ -18,6 +19,7 @@ func main() {
 	//REPOSITORIES
 	userRepo := user.NewUserRepository(db)
 	transRepo := transactions.NewTransactionRepository(db)
+	statRepo := stat.NewStatRepository(db)
 
 	//SERVICES
 	authService := auth.NewAuthService(userRepo)
@@ -29,10 +31,13 @@ func main() {
 		TransactionRepository: transRepo,
 		TransactionService:    transService,
 	})
-
 	auth.NewAuthHandler(mux, auth.AuthHandlerDeps{
 		Config:      conf,
 		AuthService: authService,
+	})
+	stat.NewStatHandler(mux, stat.StatHandlerDeps{
+		Config:   conf,
+		StatRepo: statRepo,
 	})
 
 	server := http.Server{
